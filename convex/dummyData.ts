@@ -534,3 +534,33 @@ export const updateImages = mutation({
     return `Updated ${count} locations with images`;
   },
 });
+
+export const updateEventImages = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const events = [
+      { title: "Freetown Music Festival 2024", imageUrl: "/images/music-fest.jpg" },
+      { title: "Sierra Leone Independence Day Celebration", imageUrl: "/images/Sierra-leone-indepent.webp" },
+      { title: "Freetown Marathon 2024", imageUrl: "/images/freetown-marathon.png" },
+      { title: "Tech Innovation Workshop", imageUrl: "/images/tech-innovation.webp.webp" },
+      { title: "Lumley Beach Sunset Concert", imageUrl: "/images/beach-cervival.jpeg" },
+      { title: "Freetown Food Festival", imageUrl: "/images/food-fest.jpeg" },
+      { title: "Art Exhibition: Contemporary Sierra Leone", imageUrl: "/images/art-exibition.webp" },
+      { title: "Business Networking Conference", imageUrl: "/images/besiness-network.jpg" },
+    ];
+
+    let count = 0;
+    for (const evt of events) {
+      const existing = await ctx.db
+        .query("events")
+        .withSearchIndex("search_events", q => q.search("title", evt.title))
+        .first();
+
+      if (existing) {
+        await ctx.db.patch(existing._id, { imageUrl: evt.imageUrl });
+        count++;
+      }
+    }
+    return `Updated ${count} events with images`;
+  },
+});

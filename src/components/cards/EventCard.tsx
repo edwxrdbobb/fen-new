@@ -37,22 +37,30 @@ export function EventCard({ event, onClick }: EventCardProps) {
     >
       {/* Image */}
       <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
-              <span className="text-white text-xl">🎉</span>
+        {event.imageUrl ? (
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span className="text-white text-xl">🎉</span>
+              </div>
+              <p className="text-sm text-gray-600">Photo coming soon</p>
             </div>
-            <p className="text-sm text-gray-600">Photo coming soon</p>
           </div>
-        </div>
+        )}
 
         {/* Status Badge */}
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${isToday
-              ? "bg-red-100 text-red-700"
-              : isUpcoming
-                ? "bg-green-100 text-green-700"
-                : "bg-gray-100 text-gray-700"
+            ? "bg-red-100 text-red-700"
+            : isUpcoming
+              ? "bg-green-100 text-green-700"
+              : "bg-gray-100 text-gray-700"
             }`}>
             {isToday ? "Today" : isUpcoming ? "Upcoming" : "Past"}
           </span>

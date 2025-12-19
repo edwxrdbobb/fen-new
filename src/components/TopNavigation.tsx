@@ -10,6 +10,7 @@ interface TopNavigationProps {
   onViewModeChange: (mode: "card" | "list" | "map") => void;
   onChatClick: () => void;
   user: any;
+  onNavigate: (page: "home" | "profile" | "settings") => void;
 }
 
 export function TopNavigation({
@@ -20,12 +21,13 @@ export function TopNavigation({
   onViewModeChange,
   onChatClick,
   user,
+  onNavigate,
 }: TopNavigationProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between transition-colors">
+    <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between transition-colors sticky top-0 z-20">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
         <button
@@ -36,9 +38,12 @@ export function TopNavigation({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => onNavigate("home")}
+        >
+          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-600/20">
             <span className="text-white font-bold text-sm">FEN</span>
           </div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">Find Everything Now</h1>
@@ -58,7 +63,7 @@ export function TopNavigation({
             placeholder="Search locations, events, or experiences..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-gray-50/50 dark:bg-gray-700/50 backdrop-blur-sm placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
           />
         </div>
       </div>
@@ -94,10 +99,10 @@ export function TopNavigation({
         </button>
 
         {/* View Mode Toggle */}
-        <div className="hidden md:flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+        <div className="hidden md:flex bg-gray-100/50 dark:bg-gray-700/50 backdrop-blur-sm rounded-lg p-1">
           <button
             onClick={() => onViewModeChange("card")}
-            className={`p-2 rounded-md transition-colors ${viewMode === "card" ? "bg-white dark:bg-gray-600 shadow-sm" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+            className={`p-2 rounded-md transition-all ${viewMode === "card" ? "bg-white dark:bg-gray-600 shadow-sm transform scale-105" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
             title="Card View"
           >
             <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +111,7 @@ export function TopNavigation({
           </button>
           <button
             onClick={() => onViewModeChange("list")}
-            className={`p-2 rounded-md transition-colors ${viewMode === "list" ? "bg-white dark:bg-gray-600 shadow-sm" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+            className={`p-2 rounded-md transition-all ${viewMode === "list" ? "bg-white dark:bg-gray-600 shadow-sm transform scale-105" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
             title="List View"
           >
             <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +120,7 @@ export function TopNavigation({
           </button>
           <button
             onClick={() => onViewModeChange("map")}
-            className={`p-2 rounded-md transition-colors ${viewMode === "map" ? "bg-white dark:bg-gray-600 shadow-sm" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+            className={`p-2 rounded-md transition-all ${viewMode === "map" ? "bg-white dark:bg-gray-600 shadow-sm transform scale-105" : "hover:bg-gray-200 dark:hover:bg-gray-600"}`}
             title="Map View"
           >
             <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +135,7 @@ export function TopNavigation({
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
-            <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center shadow-md">
               <span className="text-white text-sm font-medium">
                 {user?.email?.charAt(0).toUpperCase() || "U"}
               </span>
@@ -141,13 +146,29 @@ export function TopNavigation({
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+            <div className="absolute right-0 mt-2 w-48 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 py-1 z-50">
               <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.email}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.email}</p>
               </div>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">My Videos</a>
+              <button
+                onClick={() => {
+                  onNavigate("profile");
+                  setShowProfileMenu(false);
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                Profile
+              </button>
+              <button
+                onClick={() => {
+                  onNavigate("settings");
+                  setShowProfileMenu(false);
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                Settings
+              </button>
+              <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors">My Videos</a>
               <div className="border-t border-gray-100 dark:border-gray-700 mt-1">
                 <div className="px-4 py-2">
                   <SignOutButton />

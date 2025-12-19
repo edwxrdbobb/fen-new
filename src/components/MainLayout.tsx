@@ -6,6 +6,9 @@ import { Sidebar } from "./Sidebar";
 import { MainContent } from "./MainContent";
 import { AIChat } from "./AIChat";
 
+import { ProfileView } from "./views/ProfileView";
+import { SettingsView } from "./views/SettingsView";
+
 export function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"locations" | "events">("locations");
@@ -13,6 +16,7 @@ export function MainLayout() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<"home" | "profile" | "settings">("home");
 
   const loggedInUser = useQuery(api.auth.loggedInUser);
   const seedLocations = useMutation(api.dummyData.seedLocations);
@@ -41,9 +45,15 @@ export function MainLayout() {
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          setCurrentPage("home");
+        }}
         selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={(category) => {
+          setSelectedCategory(category);
+          setCurrentPage("home");
+        }}
       />
 
       {/* Main Content Area */}
@@ -52,20 +62,31 @@ export function MainLayout() {
         <TopNavigation
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+          onSearchChange={(query) => {
+            setSearchQuery(query);
+            if (currentPage !== "home") setCurrentPage("home");
+          }}
           viewMode={viewMode}
-          onViewModeChange={setViewMode}
+          onViewModeChange={(mode) => {
+            setViewMode(mode);
+            setCurrentPage("home");
+          }}
           onChatClick={() => setChatOpen(true)}
           user={loggedInUser}
+          onNavigate={(page) => setCurrentPage(page)}
         />
 
         {/* Main Content */}
-        <MainContent
-          activeTab={activeTab}
-          viewMode={viewMode}
-          searchQuery={searchQuery}
-          selectedCategory={selectedCategory}
-        />
+        {currentPage === "home" && (
+          <MainContent
+            activeTab={activeTab}
+            viewMode={viewMode}
+            searchQuery={searchQuery}
+            selectedCategory={selectedCategory}
+          />
+        )}
+        {currentPage === "profile" && <ProfileView user={loggedInUser} />}
+        {currentPage === "settings" && <SettingsView />}
       </div>
 
       {/* Mobile Sidebar Overlay */}

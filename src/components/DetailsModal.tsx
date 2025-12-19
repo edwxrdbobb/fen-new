@@ -167,7 +167,18 @@ export function DetailsModal({ isOpen, onClose, item, type }: DetailsModalProps)
 
                             {/* Action Buttons */}
                             <div className="flex gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
-                                <button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center">
+                                <button
+                                    onClick={() => {
+                                        if (type === 'location') {
+                                            const { lat, lng } = item.coordinates;
+                                            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+                                        } else {
+                                            // TODO: Implement ticket purchase flow
+                                            console.log("Get Tickets clicked");
+                                        }
+                                    }}
+                                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center"
+                                >
                                     {type === 'event' ? 'Get Tickets' : 'Get Directions'}
                                 </button>
                                 <button className="p-3 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
